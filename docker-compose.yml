@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  web:
+    restart: on-failure
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  redis-server:
+    image: "redis:alpine"
+  database:
+    image: "mysql:latest"
+    # ports: 
+    #   - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # MYSQL_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_PASSWORD: root
