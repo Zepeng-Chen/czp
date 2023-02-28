@@ -20,13 +20,12 @@ func main() {
 		user.POST("/register", registerHandler)
 		user.PATCH("/update", updateHandler)
 		user.POST("/delete", deleteHandler)
-		user.POST("/search", searchHandler)
+		user.GET("/search", searchHandler)
 	}
 
 	api := r.Group("/api")
-	payment := api.Group("/payment")
 	{
-		payment.GET("/")
+		api.GET("")
 	}
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
