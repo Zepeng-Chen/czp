@@ -9,8 +9,8 @@ RUN go mod download
 
 COPY cmd/app/*.go ./
 
-RUN go build -o /taurus
+RUN go build -o taurus
 
 EXPOSE 8080
 
-CMD [ "/taurus" ]
+CMD [ "taurus" ]
