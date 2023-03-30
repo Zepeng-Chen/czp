@@ -3,25 +3,33 @@ package payment
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 type credit float64
 
+type Account struct {
+	AccountID    string
+	Balance      credit
+	CreatedAt    time.Time
+	LastModified time.Time
+}
+
 var (
-	account credit
-	mutex   sync.Mutex
+	mutex sync.RWMutex
 )
 
-func makePayment(account, amount credit) {
+func makePayment(a Account, amount credit) {
 	ch := make(chan credit)
-	go account.addCredit(amount)
-	ch <- account
+	go a.addCredit(amount)
+	ch <- a.Balance
 	v := <-ch
 	fmt.Print("new balance is", v)
 }
 
-func (a credit) addCredit(value credit) {
+func (a *Account) addCredit(c credit) {
 	mutex.Lock()
 	defer mutex.Unlock()
-	a += value
+	a.Balance += c
+	a.LastModified = time.Now()
 }
