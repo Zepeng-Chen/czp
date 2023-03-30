@@ -2,41 +2,40 @@ package user
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 
+	p "github.com/Zepeng-Chen/taurus/api/v1/payment"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Age      *int   `json:"age,omitempty"`
-	Phone    *int64 `json:"phone,omitempty"`
-	Address  string `json:"address,omitempty"`
-	Account  Account
+	Username string  `json:"username"`
+	Password *string `json:"password"`
+	Age      *int    `json:"age,omitempty"`
+	Phone    *int64  `json:"phone,omitempty"`
+	Address  string  `json:"address,omitempty"`
+	Account  p.Account
 }
-
-type Account struct {
-	AccountID    string
-	Balance      credit
-	LastModified time.Time
-}
-
-type credit float64
 
 var userMap = make(map[string]User)
 
 // 注册新用户，如果存在相同用户名就会提示换一个用户名
 func NewUserRegister(c *gin.Context) {
-	jsonData, _ := ioutil.ReadAll(c.Request.Body)
-	new_user := User{}
-	json.Unmarshal(jsonData, &new_user)
+	var new_user User
+	if err := c.BindJSON(&new_user); err != nil {
+		c.AbortWithError(http.StatusBadRequest, errors.New("Request not in correct structure"))
+		return
+	}
+	// jsonData, _ := ioutil.ReadAll(c.Request.Body)
+	// new_user := User{}
+	// json.Unmarshal(jsonData, &new_user)
 	if _, ok := userMap[new_user.Username]; !ok {
+		*new_user.Password, _ = HashPasswd(*new_user.Password)
 		userMap[new_user.Username] = new_user
 		c.JSON(http.StatusOK, gin.H{
 			"code":    0,
@@ -62,7 +61,7 @@ func UserLogIn(c *gin.Context) {
 			"message": "username not found",
 		})
 		return
-	} else if u.Password != user.Password {
+	} else if !CheckPasswdHash(*user.Password, *u.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    -1,
 			"message": "Authentication failed, password mismatch. Please try again.",
