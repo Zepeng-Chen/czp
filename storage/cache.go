@@ -1,4 +1,4 @@
-package utils
+package storage
 
 import (
 	"context"
@@ -35,6 +35,4 @@ func redisClient() {
 	} else {
 		fmt.Println("key2", val2)
 	}
-	// Output: key value
-	// key2 does not exist
 }
