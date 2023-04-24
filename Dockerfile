@@ -7,10 +7,10 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-COPY cmd/app/*.go ./
+COPY . .
 
-RUN go build -o taurus
+RUN go build -o taurus cmd/main.go
 
 EXPOSE 8080
 
-CMD [ "taurus" ]
+CMD [ "/app/taurus" ]

@@ -7,18 +7,20 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/Zepeng-Chen/taurus/internal"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	p "github.com/Zepeng-Chen/taurus/api/v1/payment"
+	p "github.com/Zepeng-Chen/taurus/handlers/payment"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type User struct {
-	Username string  `json:"username"`
-	Password *string `json:"password"`
-	Age      *int    `json:"age,omitempty"`
-	Phone    *int64  `json:"phone,omitempty"`
-	Address  string  `json:"address,omitempty"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Age      *int   `json:"age,omitempty"`
+	Phone    *int64 `json:"phone,omitempty"`
+	Address  string `json:"address,omitempty"`
 	Account  p.Account
 }
 
@@ -31,13 +33,11 @@ func NewUserRegister(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, errors.New("Request not in correct structure"))
 		return
 	}
-	// jsonData, _ := ioutil.ReadAll(c.Request.Body)
-	// new_user := User{}
-	// json.Unmarshal(jsonData, &new_user)
+
 	if _, ok := userMap[new_user.Username]; !ok {
-		*new_user.Password, _ = HashPasswd(*new_user.Password)
+		new_user.Password, _ = internal.HashPasswd(new_user.Password)
 		userMap[new_user.Username] = new_user
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusCreated, gin.H{
 			"code":    0,
 			"message": fmt.Sprintf("User %s has just been created. Welcome!", new_user.Username),
 		})
@@ -61,7 +61,7 @@ func UserLogIn(c *gin.Context) {
 			"message": "username not found",
 		})
 		return
-	} else if !CheckPasswdHash(*user.Password, *u.Password) {
+	} else if !internal.CheckPasswdHash(user.Password, u.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    -1,
 			"message": "Authentication failed, password mismatch. Please try again.",
@@ -78,9 +78,12 @@ func UserLogIn(c *gin.Context) {
 
 // 用户退出登录，退出后将不可以做写操作
 func UserLogOut(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
 	c.JSON(http.StatusOK, gin.H{
 		"code":    0,
-		"message": "log out succeeded",
+		"message": "User sign out successfully",
 	})
 }
 
