@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        body {
+            text-align: center
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Log in</h1>
+
+    <form action="/user/login" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password"><br><br>
+        <input type="submit" value="Log in">
+    </form>
+
+    <p>Click the "Log in" button and if successful, you will be redirected to your homepage.</p>
+
+</body>
+
+</html>

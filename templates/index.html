@@ -4,12 +4,33 @@
 <head>
     <title>Taurus Welcome Page</title>
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+
+    <style>
+        .button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        body {
+            text-align: center
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Dear visitor, welcome to Taurus!</h1>
-    <p1><a href="/user/register">Sign up here!</a></p1>
-    <p2><a href="/user/login">Login here!</a></p2>
+    <h1>Dear visitor,
+        welcome to Taurus !</h1>
+    <h2>New user?</h2>
+    <p><a href="/user/register" class="button">Sign up now !</a></p>
+    <h2>Already have an account?</h2>
+    <p><a href="/user/login" class="button">Login here !</a></p>
 </body>
 
 </html>

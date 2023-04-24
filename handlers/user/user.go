@@ -16,20 +16,26 @@ import (
 )
 
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Age      *int   `json:"age,omitempty"`
-	Phone    *int64 `json:"phone,omitempty"`
-	Address  string `json:"address,omitempty"`
+	Username string `form:"username"`
+	Password string `form:"password"`
+	Age      *int   `form:"age,omitempty"`
+	Phone    *int64 `form:"phone,omitempty"`
+	Address  string `form:"address,omitempty"`
 	Account  p.Account
 }
 
 var userMap = make(map[string]User)
 
+func RegisterPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "registerForm.html", gin.H{
+		"message": "Please fill out the registration form to sign up.",
+	})
+}
+
 // 注册新用户，如果存在相同用户名就会提示换一个用户名
 func NewUserRegister(c *gin.Context) {
 	var new_user User
-	if err := c.BindJSON(&new_user); err != nil {
+	if err := c.ShouldBind(&new_user); err != nil {
 		c.AbortWithError(http.StatusBadRequest, errors.New("Request not in correct structure"))
 		return
 	}
@@ -37,23 +43,29 @@ func NewUserRegister(c *gin.Context) {
 	if _, ok := userMap[new_user.Username]; !ok {
 		new_user.Password, _ = internal.HashPasswd(new_user.Password)
 		userMap[new_user.Username] = new_user
-		c.JSON(http.StatusCreated, gin.H{
-			"code":    0,
-			"message": fmt.Sprintf("User %s has just been created. Welcome!", new_user.Username),
+		c.HTML(http.StatusCreated, "loginForm.html", gin.H{
+			"message": fmt.Sprintf("User %s has been successfully created. Welcome! Please log in.", new_user.Username),
 		})
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    -1,
+		c.HTML(http.StatusConflict, "registerForm.html", gin.H{
 			"message": "Same username has already existed, please change to another one.",
 		})
 	}
 }
 
+func LoginPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "loginForm.html", gin.H{
+		"message": "Please log in.",
+	})
+}
+
 // 用户登录，登录后才可以做写操作
 func UserLogIn(c *gin.Context) {
-	jsonData, _ := ioutil.ReadAll(c.Request.Body)
-	user := User{}
-	json.Unmarshal(jsonData, &user)
+	var user User
+	if err := c.ShouldBind(&user); err != nil {
+		c.AbortWithError(http.StatusBadRequest, errors.New("Request not in correct structure"))
+		return
+	}
 
 	if u, ok := userMap[user.Username]; !ok {
 		c.JSON(http.StatusNotFound, gin.H{
