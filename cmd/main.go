@@ -69,7 +69,9 @@ func main() {
 	// user router group
 	u := router.Group("/user")
 	{
+		u.GET("/register", user.RegisterPage)
 		u.POST("/register", user.NewUserRegister)
+		u.GET("/login", user.LoginPage)
 		u.POST("/login", user.UserLogIn)
 		u.GET("/logout", user.UserLogOut)
 		u.PATCH("/update", user.UpdateUserInfo)
