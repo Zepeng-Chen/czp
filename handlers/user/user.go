@@ -16,8 +16,8 @@ import (
 )
 
 type User struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
 	Age      *int   `form:"age,omitempty"`
 	Phone    *int64 `form:"phone,omitempty"`
 	Address  string `form:"address,omitempty"`

@@ -43,7 +43,7 @@ func main() {
 	// 主要路由入口
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "Main website",
+			"title": "Home Page",
 		})
 	})
 
@@ -63,7 +63,7 @@ func main() {
 	// frontend
 	router.Static("/assets", "../assets")
 
-	// cookie
+	// seesion and cookie
 	router.Use(sessions.Sessions("session", cookie.NewStore()))
 
 	// user router group
