@@ -4,6 +4,11 @@
 <head>
     <title>Taurus Welcome Page</title>
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <style>
         .button {
@@ -19,18 +24,21 @@
         }
 
         body {
-            text-align: center
+            text-align: center;
+            background-image: url('../assets/background.jpg');
         }
     </style>
 </head>
 
 <body>
+    {{ template "header.html" .}}
     <h1>Dear visitor,
         welcome to Taurus !</h1>
     <h2>New user?</h2>
     <p><a href="/user/register" class="button">Sign up now !</a></p>
     <h2>Already have an account?</h2>
     <p><a href="/user/login" class="button">Login here !</a></p>
+    <img src="../assets/background.jpg" alt="Moutain" width="500" height="333">
 </body>
 
 </html>
